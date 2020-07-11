@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<title>Tickets</title>
+
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://www.w3schools.com/html/styles.css">
+<script>
+$(document).ready(function(){
+	var $rows = $('#table tr').not(':first');
+	var filters = { col1: '', col2: '', col3: '', col4: ''};
+	$('#search1').keyup(function() {
+    	var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+    	filters.col1 = val;
+   		 applyFilters();
+	});
+	$('#search2').keyup(function() {
+   		 var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+    	filters.col2 = val;
+   		 applyFilters();
+	});
+	$('#search3').keyup(function() {
+    	var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+    	filters.col3 = val;
+    	applyFilters();
+	});
+	$('#search4').keyup(function() {
+   		 var val = $.trim($(this).val()).replace(/ +/g, ' ').toLowerCase();
+   		 filters.col4 = val;
+    	applyFilters();
+	});
+	function applyFilters() {
+   		 $rows.show();
+  		$rows.filter(function() {
+        	var text = $(this).find('td:nth-child(1)').text().replace(/\s+/g, ' ').toLowerCase();
+        	return !~text.indexOf(filters.col1);
+   		 }).hide();
+  		$rows.filter(function() {
+    		var text = $(this).find('td:nth-child(2)').text().replace(/\s+/g, ' ').toLowerCase();
+        	return !~text.indexOf(filters.col2);
+    	}).hide();
+	    $rows.filter(function() {
+   			 var text = $(this).find('td:nth-child(3)').text().replace(/\s+/g, ' ').toLowerCase();
+       	 	return !~text.indexOf(filters.col3);
+   	   }).hide();
+  		$rows.filter(function() {
+    		var text = $(this).find('td:nth-child(8)').text().replace(/\s+/g, ' ').toLowerCase();
+       		 return !~text.indexOf(filters.col4);
+    	}).hide();
+	};
+});
+</script>
+</head>
+<body>
+	<h2>List of Tickets</h2>
+	
+	<form method="POST" th:action="@{/uploadExcel}" enctype="multipart/form-data">
+     Export to DB : <input type="file" name="excelfile" /> <br/><br/>
+   		<button type="submit" id="submit">Submit</button>
+ 	</form> <br/> <br/>
+  	<div>
+  		<a href="http://localhost:9523/excel/downloadExcel">Download</a> <hr/>
+  	</div>
+  		
+  		SlNo : <input type="text" id="search1" PlaceHolder = "Search SlNo"/> <br/><br/>
+  		Name : <input type="text" id="search2" PlaceHolder = "Search Name"/> <br/><br/>
+  		TicketNo : <input type="text" id="search3" PlaceHolder = "Search TicketNo"/> <br/><br/>
+  		ClosedDate : <input type="text" id="search4" PlaceHolder = "Search ClosedDate"/> <br/><br/>
+  		
+	<table border="" id="table">
+		
+		<tr>
+			<th>SlNo</th>
+			<th>Name</th>
+			<th>TicketNo</th>
+			<th>ToolName</th>
+			<th>Category</th>
+			<th>Title</th>
+			<th>ReceivedDate</th>
+			<th>ClosedDate</th>
+			<th>Status</th>
+		</tr>
+		
+		<tr th:each="ticket : ${tickets}" id="myTable">
+			<td th:text="${ticket.slno}">SlNo</td>
+			<td th:text="${ticket.name}">Name</td>
+			<td th:text="${ticket.ticketNo}">TicketNo</td>
+			<td th:text="${ticket.toolName}">ToolName</td>
+			<td th:text="${ticket.category}">Category</td>
+			<td th:text="${ticket.title}">Title</td>
+			<td th:text="${ticket.recDate}">ReceivedDate</td>
+			<td th:text="${ticket.cloDate}">ClosedDate</td>
+			<td th:text="${ticket.status}">Status</td>
+		</tr>
+		
+	</table>
+
+</body>
+</html>
